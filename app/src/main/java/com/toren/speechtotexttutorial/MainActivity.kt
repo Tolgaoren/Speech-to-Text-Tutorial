@@ -22,7 +22,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tts: TextToSpeech
     private var speechRecognizer: SpeechRecognizer? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
@@ -38,20 +37,7 @@ class MainActivity : AppCompatActivity() {
         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             isAudioPermissionGranted = permissions[RECORD_AUDIO] ?: isAudioPermissionGranted
         }
-
-        tts = TextToSpeech(this){
-            if (it == TextToSpeech.SUCCESS) {
-
-                val result = tts.setLanguage(Locale.getDefault())
-                if (result == TextToSpeech.LANG_MISSING_DATA ||
-                    result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e("tts", "Language not supported.")
-                }
-            }else {
-                Log.e("tts", "Initialization failed")
-            }
-        }
-
+        requestPermission()
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
 
         val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
